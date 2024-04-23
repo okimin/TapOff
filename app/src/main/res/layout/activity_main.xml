@@ -7,36 +7,47 @@
         android:layout_height="match_parent"
         tools:context=".MainActivity">
     <TextView
-            android:layout_width="65dp"
-            android:layout_height="45dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:id="@+id/counter" android:textSize="40sp"
             android:textAlignment="center" android:text="@string/number"
-            app:layout_constraintTop_toBottomOf="@+id/currentCount" android:layout_marginTop="140dp"
-    />
+            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintTop_toBottomOf="@+id/currentCount" app:layout_constraintVertical_bias="0.146"/>
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/counter"
             android:layout_marginTop="104dp" app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
-            tools:text="@string/tap" android:id="@+id/tapButton"
-    />
+            android:id="@+id/tapButton"
+            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintVertical_bias="0.259"
+            android:text="@string/tap"/>
     <TextView
             android:text="@string/count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:id="@+id/currentCount"
             android:textSize="40sp"
             app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" android:layout_marginTop="128dp"
-            app:layout_constraintHorizontal_bias="0.496"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.496" app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0.073"/>
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:id="@+id/startButton"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.498" android:layout_marginBottom="68dp"
-            android:text="@string/start" app:layout_constraintTop_toBottomOf="@+id/tapButton"/>
+            android:text="@string/start" app:layout_constraintTop_toBottomOf="@+id/tapButton"
+            app:layout_constraintVertical_bias="0.34"/>
+    <TextView
+            android:text="@string/timeLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/timeLeftText"
+            android:textSize="40sp"
+            app:layout_constraintTop_toBottomOf="@+id/counter" android:layout_marginTop="64dp"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tapButton" app:layout_constraintVertical_bias="0.137"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

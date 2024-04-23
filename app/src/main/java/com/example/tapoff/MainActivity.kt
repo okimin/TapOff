@@ -7,76 +7,103 @@ import android.os.Looper
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.isVisible
 
 class MainActivity : AppCompatActivity() {
     private lateinit var counter: TextView
+
     private lateinit var timerTextView: TextView
+    private lateinit var startButton : Button
+
 
     private var currentCount = 0
-    private var timerRunning = false
     private var readyRunning = false
+    private var isReady = false
+    private var startTime: Long = 0L
     private val timerDuration = 10000L
     private val readyDuration = 3000L
+    private val handler = Handler(Looper.getMainLooper())
+    private val preChallengeRunnable = object : Runnable {
+        override fun run() {
+            if (readyRunning) {
+                val timeLeft = readyDuration - (System.currentTimeMillis() - (startTime))
+                val seconds = (timeLeft / 1000).toInt()
+                if (timeLeft <= 0) {
+                    timerTextView.isVisible = true
+                    isReady = true
+                    Toast.makeText(this@MainActivity, "Start!", Toast.LENGTH_SHORT).show()
+                    handler.removeCallbacks(this) // Stop pre-challenge timer
+                    startTime = System.currentTimeMillis()
+                    handler.post(challengeRunnable) // Start challenge timer after 1 second
+                } else {
+                    Toast.makeText(this@MainActivity, "Ready in $seconds", Toast.LENGTH_SHORT).show()
+                    handler.postDelayed(this, 1000)
+                }
+            }
+        }
+    }
+
+    private val challengeRunnable = object : Runnable {
+        override fun run() {
+            if (isReady) {
+                val timeLeft = timerDuration - (System.currentTimeMillis() - (startTime))
+                val seconds = (timeLeft / 1000).toInt()
+                timerTextView.text = "Time Remaining: $seconds"
+                if (timeLeft <= 0) {
+                    resetTimer()
+                } else {
+                    handler.postDelayed(this, 1000)
+                }
+            }
+        }
+    }
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         val tapButton = findViewById<Button>(R.id.tapButton)
-        val startButton = findViewById<Button>(R.id.startButton)
-        val counter = findViewById<TextView>(R.id.counter)
+        timerTextView = findViewById<TextView>(R.id.timeLeftText)
+        timerTextView.isVisible =  false
+        startButton = findViewById<Button>(R.id.startButton)
+        counter = findViewById<TextView>(R.id.counter)
 
         tapButton.setOnClickListener {
             //TODO : Check if timer is Running
-            currentCount++
-            counter.text = currentCount.toString()
+            if(isReady) {
+                currentCount++
+                counter.text = currentCount.toString()
+            }
 
         }
 
         startButton.setOnClickListener {
+            startButton.isEnabled = false
+            startTime = System.currentTimeMillis()
             startTimer()
-            //TODO : Make the button invisible
         }
 
     }
 
     private fun startTimer() {
         readyRunning = true
-        val handler = Handler(Looper.getMainLooper())
-        val runnable = object : Runnable {
-            override fun run() {
-                if(readyRunning){
-                    val timeLeft = readyDuration - System.currentTimeMillis() % readyDuration
-                    val seconds = (timeLeft / 1000).toInt()
-                    if(seconds <= 0){
-                        timerRunning = true
-                        Toast.makeText(this@MainActivity, "Start!", Toast.LENGTH_SHORT).show()
-                    }
-                    else {
-                        Toast.makeText(this@MainActivity, "Ready in $seconds", Toast.LENGTH_SHORT).show()
-                        handler.postDelayed(this, 1000) // Update timer text every second
-                    }
-                }
-                else if (timerRunning) {
-                    val timeLeft = timerDuration - System.currentTimeMillis() % timerDuration
-                    val seconds = (timeLeft / 1000).toInt()
-                    timerTextView.text = seconds.toString()
-                    handler.postDelayed(this, 1000) // Update timer text every second
-                } else {
-                    // Timer finished, reset everything
-                    timerTextView.text = "0"
-                }
-            }
-        }
-        handler.post(runnable)
+        handler.post(preChallengeRunnable)
     }
 
 
 
     private fun resetTimer() {
-        timerRunning = false
         readyRunning = false
-        timerTextView.text = "0"
+        isReady = false
+        timerTextView.isVisible = false
+        timerTextView.text = "Time Remaining: 10"
+        startButton.isEnabled = true
+        currentCount = 0
+        counter.text = currentCount.toString()
+        handler.removeCallbacks(preChallengeRunnable)
+        handler.removeCallbacks(challengeRunnable)
     }
 
 }
