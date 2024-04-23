@@ -14,9 +14,11 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var timerTextView: TextView
     private lateinit var startButton : Button
+    private lateinit var recordTextView : TextView
 
 
     private var currentCount = 0
+    private var currentRecord = 0
     private var readyRunning = false
     private var isReady = false
     private var startTime: Long = 0L
@@ -50,6 +52,8 @@ class MainActivity : AppCompatActivity() {
                 val seconds = (timeLeft / 1000).toInt()
                 timerTextView.text = "Time Remaining: $seconds"
                 if (timeLeft <= 0) {
+                    if(currentCount > currentRecord)
+                        currentRecord = currentCount
                     resetTimer()
                 } else {
                     handler.postDelayed(this, 1000)
@@ -58,14 +62,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         val tapButton = findViewById<Button>(R.id.tapButton)
         timerTextView = findViewById<TextView>(R.id.timeLeftText)
+        recordTextView = findViewById<TextView>(R.id.recordNumber)
         timerTextView.isVisible =  false
         startButton = findViewById<Button>(R.id.startButton)
         counter = findViewById<TextView>(R.id.counter)
@@ -99,6 +102,7 @@ class MainActivity : AppCompatActivity() {
         isReady = false
         timerTextView.isVisible = false
         timerTextView.text = "Time Remaining: 10"
+        recordTextView.text = "Current Record: $currentRecord"
         startButton.isEnabled = true
         currentCount = 0
         counter.text = currentCount.toString()
